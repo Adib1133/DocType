@@ -94,6 +94,7 @@ python -m PyInstaller --noconfirm doctype.spec
 
 Close the packaged app before rebuilding so its files are not locked. `build/` and Python cache folders are disposable; retain `dist/DocType/_internal`. Tests cover crop interaction, enhancement, PDF page order and export, settings persistence, thumbnail selection, and theme switching without lost edits.
 
+```
 
 ## Release notes and license
 
