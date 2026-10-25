@@ -83,7 +83,6 @@ outputs/               Generated examples
 config/settings.json   Preferences (created when saved)
 dist/DocType/          Single packaged application
 ```
-
 ## Development and verification
 
 ```powershell
