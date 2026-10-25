@@ -81,7 +81,6 @@ tests/                 Processing, UI, settings, and theme tests
 config/settings.json   Preferences (created when saved)
 dist/DocType/          Generated application (not committed)
 ```
-
 ## Development and verification
 
 ```powershell
