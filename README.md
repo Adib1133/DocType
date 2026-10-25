@@ -8,7 +8,7 @@ This application is intended for use at my current workplace to automate repetit
 
 ## Start
 
-Install Python 3.10 or newer, run `python -m pip install -r requirements.txt`, then double-click **DocType.bat** or run `python app.py`. This repository contains source only. After building, the launcher uses `dist/DocType/DocType.exe`; keep its `_internal` folder beside the executable.
+Double-click **DocType.bat**. The launcher uses `dist/DocType/DocType.exe`, with Python source as a fallback. Keep the `_internal` folder beside the executable.
 
 ## Appearance and settings
 
@@ -78,8 +78,10 @@ DocType.bat            Launcher
 doctype.spec           Build configuration
 requirements.txt       Python runtime dependencies
 tests/                 Processing, UI, settings, and theme tests
+samples/               Sample images
+outputs/               Generated examples
 config/settings.json   Preferences (created when saved)
-dist/DocType/          Generated application (not committed)
+dist/DocType/          Single packaged application
 ```
 
 ## Development and verification
@@ -93,8 +95,6 @@ python -m PyInstaller --noconfirm doctype.spec
 ```
 
 Close the packaged app before rebuilding so its files are not locked. `build/` and Python cache folders are disposable; retain `dist/DocType/_internal`. Tests cover crop interaction, enhancement, PDF page order and export, settings persistence, thumbnail selection, and theme switching without lost edits.
-
-```
 
 ## Release notes and license
 
