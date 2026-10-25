@@ -2,6 +2,10 @@
 
 A local desktop app for cropping document photos, cleaning text scans, exporting PDFs, and visually removing PDF pages. Files stay on your computer.
 
+## Workplace use
+
+This application is intended for use at my current workplace to automate repetitive document-processing tasks: preparing scanned paperwork, applying batch edits, exporting documents to a saved folder, and separating selected PDF pages. The aim is to reduce manual steps in everyday office workflows. This describes intended use and does not imply employer endorsement.
+
 ## Start
 
 Install Python 3.10 or newer, run `python -m pip install -r requirements.txt`, then double-click **DocType.bat** or run `python app.py`. This repository contains source only. After building, the launcher uses `dist/DocType/DocType.exe`; keep its `_internal` folder beside the executable.
@@ -90,6 +94,9 @@ python -m PyInstaller --noconfirm doctype.spec
 
 Close the packaged app before rebuilding so its files are not locked. `build/` and Python cache folders are disposable; retain `dist/DocType/_internal`. Tests cover crop interaction, enhancement, PDF page order and export, settings persistence, thumbnail selection, and theme switching without lost edits.
 
-## Repository hygiene
 
-Tests use synthetic documents, not personal photos. Do not commit private documents, saved settings, export folders, Python caches, or compiled distributions. These paths are excluded by `.gitignore`. Run tests from the repository root; UI tests need a desktop session.
+## Release notes and license
+
+See [RELEASE_NOTES.md](RELEASE_NOTES.md) for the initial release summary and known limitations.
+
+DocType is licensed under the **GNU General Public License, version 3 (GPL-3.0-only)**. The complete, unmodified GNU license text is in [LICENSE](LICENSE). Third-party dependencies retain their respective licenses.
