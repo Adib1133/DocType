@@ -97,6 +97,4 @@ Close the packaged app before rebuilding so its files are not locked. `build/` a
 
 ## Release notes and license
 
-See [RELEASE_NOTES.md](RELEASE_NOTES.md) for the initial release summary and known limitations.
-
 DocType is licensed under the **GNU General Public License, version 3 (GPL-3.0-only)**. The complete, unmodified GNU license text is in [LICENSE](LICENSE). Third-party dependencies retain their respective licenses.
