@@ -8,6 +8,7 @@ import customtkinter as ctk
 from PIL import ImageTk
 import pypdfium2 as pdfium
 from document_tools import remove_pdf_pages
+from printing import print_pdf
 
 class PdfPagesPanel(ctk.CTkFrame):
     def __init__(self, parent, output_folder, settings, status):
@@ -40,6 +41,11 @@ class PdfPagesPanel(ctk.CTkFrame):
         self.save_button=ctk.CTkButton(footer,text='Save edited PDF',command=self.save,
             fg_color=PALETTE["MAROON"],state='disabled')
         self.save_button.pack(pady=(4,12))
+        printbar=ctk.CTkFrame(footer,fg_color='transparent')
+        printbar.pack(fill='x',padx=12,pady=(0,10))
+        for label,removed in [('Print remaining…',False),('Print removed…',True)]:
+            ctk.CTkButton(printbar,text=label,width=140,fg_color=PALETTE['MAROON'],
+                command=lambda value=removed:self.print_document(value)).pack(side='left',padx=4)
         self.grid_area=ctk.CTkScrollableFrame(self,fg_color='transparent')
         self.grid_area.pack(fill='both',expand=True,padx=8)
         for col in range(2): self.grid_area.grid_columnconfigure(col,weight=1)
@@ -144,6 +150,21 @@ class PdfPagesPanel(ctk.CTkFrame):
         elif n==self.count and self.count:text+=' · Keep at least one page'
         self.summary.configure(text=text)
         self.save_button.configure(state='normal' if 0<n<self.count and not loading and not self.failed else 'disabled')
+
+    def print_document(self,removed=False):
+        if not self.path or self.failed or len(self.cards)!=self.count:
+            messagebox.showwarning('Print','Open a PDF and wait for previews to finish.',parent=self);return
+        indices=[i for i in range(self.count) if (i in self.selected)==removed]
+        if not indices:
+            messagebox.showwarning('Print','There are no pages in this print selection.',parent=self);return
+        try:
+            stat=Path(self.path).stat()
+            if (stat.st_size,stat.st_mtime_ns)!=self.source_stamp:
+                raise ValueError('The source PDF changed. Reopen it before printing.')
+            title=f'{Path(self.path).stem} — '+('removed pages' if removed else 'remaining pages')
+            sent=print_pdf(self.winfo_toplevel(),self.path,indices,title)
+            self.status('Print job sent to Windows.' if sent else 'Printing cancelled.')
+        except Exception as ex:messagebox.showerror('Print',str(ex),parent=self)
 
     def save(self):
         if not self.path or not 0<len(self.selected)<self.count or self.failed or len(self.cards)!=self.count:return

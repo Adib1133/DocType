@@ -8,7 +8,7 @@ This application is intended for use at my current workplace to automate repetit
 
 ## Start
 
-Double-click **DocType.bat**. The launcher uses `dist/DocType/DocType.exe`, with Python source as a fallback. Keep the `_internal` folder beside the executable.
+Install Python 3.10 or newer, run `python -m pip install -r requirements.txt`, then double-click **DocType.bat** or run `python app.py`. This repository contains source only. After building, the launcher uses `dist/DocType/DocType.exe`; keep its `_internal` folder beside the executable.
 
 ## Appearance and settings
 
@@ -78,11 +78,10 @@ DocType.bat            Launcher
 doctype.spec           Build configuration
 requirements.txt       Python runtime dependencies
 tests/                 Processing, UI, settings, and theme tests
-samples/               Sample images
-outputs/               Generated examples
 config/settings.json   Preferences (created when saved)
-dist/DocType/          Single packaged application
+dist/DocType/          Generated application (not committed)
 ```
+
 ## Development and verification
 
 ```powershell
@@ -95,6 +94,28 @@ python -m PyInstaller --noconfirm doctype.spec
 
 Close the packaged app before rebuilding so its files are not locked. `build/` and Python cache folders are disposable; retain `dist/DocType/_internal`. Tests cover crop interaction, enhancement, PDF page order and export, settings persistence, thumbnail selection, and theme switching without lost edits.
 
+## Repository hygiene
+
+Tests use synthetic documents, not personal photos. Do not commit private documents, saved settings, export folders, Python caches, or compiled distributions. These paths are excluded by `.gitignore`. Run tests from the repository root; UI tests need a desktop session.
+
 ## Release notes and license
 
+See [RELEASE_NOTES.md](RELEASE_NOTES.md) for the initial release summary and known limitations.
+
 DocType is licensed under the **GNU General Public License, version 3 (GPL-3.0-only)**. The complete, unmodified GNU license text is in [LICENSE](LICENSE). Third-party dependencies retain their respective licenses.
+
+## Direct printing (Windows)
+
+Use **File → Print**, **Ctrl+P**, or **Print enhanced pages** to print the current processed images. Each loaded image prints on its own sheet, in list order. No intermediate export is required.
+
+In **PDF pages**, **Print remaining** prints every page not marked with a cross; **Print removed** prints only crossed pages. With nothing crossed, Print remaining prints the whole PDF. Ctrl+P in this tab prints remaining pages. Load a previously exported PDF here to print it as well.
+
+Every Print action opens the Windows system print dialog. Select the printer (including Microsoft Print to PDF when installed), copies, paper size/orientation in printer properties, and an optional page range. Print-dialog ranges refer to positions in the chosen print set, not original PDF page numbers. Cancel sends no job.
+
+Pages are centered and fitted proportionally to the printer's printable area. Printer paper settings control printing independently of image-export page-size preferences. PDF pages are rendered at up to 300 DPI (long edge capped at 4500 pixels) for printing; saved PDF exports still retain original page content. This is fit-to-page printing, not an actual-size mode. A success message means Windows accepted the job, not that paper has physically printed.
+
+The implementation uses the Windows [PrintDlgW API](https://learn.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-printdlgw) and GDI; no external PDF reader is required. Non-Windows systems can still export documents, but direct printing is Windows-only.
+
+### Print preview
+
+Print now opens a DocType preview first. Use Previous/Next to inspect every page in the actual print set, then choose Choose printer / Print to open Windows printer settings. Cancel closes the preview without printing; cancelling the Windows dialog returns to the preview. This preview displays page content, not final printer margins or paper placement. The native Windows GDI print pane may still say the application does not support preview: DocType provides the preview in its own window.

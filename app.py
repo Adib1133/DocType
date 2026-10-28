@@ -6,6 +6,7 @@ interactive crop review dialog, batch editing, and document enhancement.
 """
 
 import os
+from printing import preview_and_print
 from theme import apply_theme
 from pdf_pages_panel import PdfPagesPanel
 import pikepdf
@@ -366,6 +367,7 @@ class DocTypeApp(ctk.CTk):
         f.add_command(label="Export as PDF…",   command=self._export_pdf,  accelerator="Ctrl+E")
         f.add_command(label="Export as PNGs…",  command=self._export_images)
         f.add_separator()
+        f.add_command(label="Print…", command=self._print_current, accelerator="Ctrl+P")
         f.add_command(label="Settings…", command=self._open_settings)
         f.add_command(label="PDF page remover…", command=self._pdf_remover)
         f.add_command(label="Quit",             command=self.quit,         accelerator="Ctrl+Q")
@@ -661,6 +663,9 @@ class DocTypeApp(ctk.CTk):
                       text_color=MAROON_DARK, font=ctk.CTkFont("Segoe UI", 9),
                       border_width=1, border_color=BORDER_COLOR,
                       command=self._export_images).pack(fill="x", padx=10, pady=(0, 10))
+
+        ctk.CTkButton(c,text="Print enhanced pages…",height=30,fg_color=MAROON,
+            hover_color=MAROON_HOVER,command=self._print_current).pack(fill="x",padx=10,pady=(0,10))
 
     # ── Status Bar ─────────────────────────────────────────────────────────
     def _build_statusbar(self):
@@ -1080,6 +1085,19 @@ class DocTypeApp(ctk.CTk):
         self._tab_var.set("pdf")
         self._switch_tab()
 
+    def _print_current(self):
+        if self._tab_var.get()=="pdf":
+            self._frame_pdf.print_document()
+            return
+        if not self._records:
+            messagebox.showwarning("Print","Add images to print first.");return
+        try:
+            pages=[r.graded for r in self._records]
+            self.update_idletasks()
+            sent=preview_and_print(self,len(pages),lambda i:pages[i],"DocType — enhanced pages")
+            self._set_status("Print job sent to Windows." if sent else "Printing cancelled.")
+        except Exception as ex:messagebox.showerror("Print",str(ex))
+
     def _export_pdf(self):
         if not self._records:
             messagebox.showwarning("Export", "No pages to export.")
@@ -1135,6 +1153,7 @@ class DocTypeApp(ctk.CTk):
             messagebox.showerror("Export Error", str(ex))
 
     def _bind_keys(self):
+        self.bind_all("<Control-p>",lambda e:self._print_current())
         self.bind_all("<Control-o>", lambda e: self._frame_pdf.choose() if self._tab_var.get() == "pdf" else self._load_images())
         self.bind_all("<Control-e>", lambda e: self._frame_pdf.save() if self._tab_var.get() == "pdf" else self._export_pdf())
         self.bind_all("<Control-q>", lambda e: self.quit())
